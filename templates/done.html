@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Activated</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #000B32, #000B32);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        #copy-message {
+            position: absolute;
+            top: -30px; /* Positions the message above the input field */
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 5px 10px;
+            background-color: hsl(120, 3%, 54%);
+            color: white;
+            font-size: 14px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            text-align: center;
+            z-index: 10; /* Ensure message is on top of other elements */
+          }
+          
+          #copy-message.show {
+            opacity: 1;
+          }
+        
+
+        .container {
+            background-color: #E7F0E7;
+            border-radius: 10px;
+            padding: 20px;
+            width: 300px;
+            text-align: center;
+            position: relative;
+        }
+        .form-container {
+            background-color: rgba(231, 240, 231, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        .form-container img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        .form-container h1 {
+            color: #155800;
+            margin-bottom: 10px;
+        }
+        .form-container p {
+            color: #155800;
+            margin-bottom: 20px;
+        }
+        .form-container .details {
+            color: #155800;
+            margin-bottom: 0;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease; /* Smooth transition */
+        }
+        .copy-button, .menu-button {
+            background-color: #155800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px; /* Adjust margin-top to create space between text and button */
+        }
+        .expandable-button, .copy-config-button {
+            background-color: #155800;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            display: block;
+            margin: 0 auto;
+            margin-top: 20px; /* Adjust margin-top to create space between text and button */
+        }
+        .button-click-animation {
+            animation: buttonClickAnimation 0.3s ease;
+        }
+
+        @keyframes buttonClickAnimation {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    </style>
+    <script>
+        function copyText() {
+            var configText = document.querySelector('.config').innerText;
+            var emailText = document.querySelector('.email').innerText;
+            var txidText = document.querySelector('.txid').innerText;
+            var walletAddressText = document.querySelector('.wallet-address').innerText;
+            var priceText = document.querySelector('.price').innerText;
+            var expireDayText = document.querySelector('.expire-day').innerText;
+
+            var copiedText = "Your VPN: " + configText.trim() + "\n" +
+                             "Your Address: " + emailText.trim() + "\n" +
+                             "Reciept: " + txidText.trim() + "\n" +
+                             "Wallet you paid from: " + walletAddressText.trim() + "\n" +
+                             "Price and panel: " + priceText.trim() + "\n" +
+                             "Time that your config expires: " + expireDayText.trim();}
+
+        function animateButtonClick(button) {
+            button.classList.add('button-click-animation');
+            setTimeout(function() {
+                button.classList.remove('button-click-animation');
+            }, 300); // Duration of the animation
+        }
+
+        function toggleDetails() {
+            var details = document.querySelector('.details');
+            var expandButton = document.querySelector('.expandable-button');
+
+            if (details.style.maxHeight === '0px' || details.style.maxHeight === '') {
+                details.style.maxHeight = details.scrollHeight + 'px';
+                expandButton.textContent = 'Collapse Reciept';
+            } else {
+                details.style.maxHeight = '0';
+                expandButton.textContent = 'Expand Reciept';
+            }
+        }
+    </script>
+    <script>
+        function copyToClipboard() {
+            const textToCopy = document.getElementById("config").value;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+              const message = document.getElementById("copy-message");
+              message.classList.add("show");
+              setTimeout(() => {
+                message.classList.remove("show");
+              }, 1000); // Hide the message after 1 second
+            }, (err) => {
+              console.error("Failed to copy to clipboard:", err);
+            });
+          }
+          
+    </script>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <img src="https://cdn4.iconfinder.com/data/icons/digital-nomad-crayons-vol-1/256/Customer_Activation-512.png" alt="Activated">
+            <h1>Subscription Activated</h1>
+            <p>Your subscription has been successfully activated. Thank you!</p>
+            <div class="details" style="overflow: hidden; max-height: 0;">
+                <p id ="config" class="config">Config: {{ config }}</p>
+                <div id="copy-message">Copied!</div>
+                <button class="copy-config-button" onclick="copyToClipboard(); animateButtonClick(this)">Copy Config</button>
+
+                <p class="email">Email: {{ email }}</p>
+                <p class="txid">Transaction ID: {{ txid }}</p>
+                <p class="wallet-address">Wallet Address: {{ wallet_address }}</p>
+                <p class="price">Price: {{ price }}</p>
+                <p class="expire-day">Expiration Date: {{ expire_day }}</p>
+            </div>
+            <button class="expandable-button" onclick="toggleDetails(); animateButtonClick(this)">Expand Config</button>
+            <button class="copy-button" onclick="copyText(); animateButtonClick(this)">Copy your information</button>
+            <button class="menu-button" onclick="window.location.href = 'https://venxv.com'; animateButtonClick(this)">Return to Main Menu</button>
+        </div>
+    </div>
+</body>
+</html>
